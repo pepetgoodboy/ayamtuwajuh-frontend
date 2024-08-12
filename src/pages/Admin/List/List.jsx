@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import CurrencyIDR from "../../../composables/CurrencyIDR/CurrencyIDR";
 import Spinner from "react-spinner-material";
+import { FaTrashAlt } from "react-icons/fa";
 
 const List = () => {
   const { url, validateAdmin } = useContext(StoreContext);
@@ -96,12 +97,13 @@ const List = () => {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm">
                       <div className="flex gap-2 items-center cursor-pointer">
-                        <p
+                        <div
                           onClick={() => handleDeleteFoodDrink(item._id)}
-                          className="font-medium"
+                          className="font-medium flex gap-2 items-center"
                         >
-                          Delete
-                        </p>
+                          <FaTrashAlt className="text-red-500 text-xl items-center" />
+                          <p>Delete</p>
+                        </div>
                       </div>
                     </td>
                   </tr>
