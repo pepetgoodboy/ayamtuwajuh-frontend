@@ -146,14 +146,16 @@ const NavbarHome = () => {
                 </ScrollLink>
                 <hr className="border-1 border-neutral-300" />
                 {token && (
-                  <Link
-                    to="/myorders"
-                    className="hover:text-orange-500 font-poppins cursor-pointer"
-                  >
-                    My Orders
-                  </Link>
+                  <>
+                    <Link
+                      to="/myorders"
+                      className="hover:text-orange-500 font-poppins cursor-pointer"
+                    >
+                      My Orders
+                    </Link>
+                    <hr className="border-1 border-neutral-300" />
+                  </>
                 )}
-                <hr className="border-1 border-neutral-300" />
                 <ScrollLink
                   activeClass="active"
                   to="about"
@@ -201,7 +203,7 @@ const NavbarHome = () => {
           offset={-70}
           duration={500}
         >
-          <IoMdArrowDropupCircle className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-neutral-400 hover:text-neutral-500 cursor-pointer" />
+          <IoMdArrowDropupCircle className="text-4xl lg:text-5xl text-neutral-400 hover:text-neutral-500 cursor-pointer" />
         </ScrollLink>
       </div>
     </>
