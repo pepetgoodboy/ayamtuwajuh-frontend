@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { menu_list, all_menu } from "../assets/assets";
+import { menu_list } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -8,7 +8,8 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const url = import.meta.env.VITE_API_URL;
-  const [token, setToken] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const [menuList, setMenuList] = useState([]);
   const [allMenu, setAllMenu] = useState([]);
   const [cartItems, setCartItems] = useState({});
@@ -16,18 +17,54 @@ const StoreContextProvider = (props) => {
 
   const navigate = useNavigate();
 
+  // Configure axios defaults
+  axios.defaults.withCredentials = true;
+
+  // Check auth status
+  const checkAuthStatus = async () => {
+    try {
+      const response = await axios.get(`${url}/api/user/check-auth`);
+      setIsAuthenticated(response.data.success);
+      setUserRole(response.data.role);
+      return response.data.success;
+    } catch (error) {
+      setIsAuthenticated(false);
+      setUserRole(null);
+      return false;
+    }
+  };
+
   // Validate User
-  const validateUser = () => {
-    if (!token) {
+  const validateUser = async () => {
+    const isAuth = await checkAuthStatus();
+    if (!isAuth) {
       toast.error("Silahkan login terlebih dahulu!");
       navigate("/login");
     }
   };
 
   // Validate Admin
-  const validateAdmin = () => {
-    if (!localStorage.getItem("tokenAdmin")) {
+  const validateAdmin = async () => {
+    const isAuth = await checkAuthStatus();
+    if (!isAuth && userRole !== "admin") {
       navigate("/");
+    }
+  };
+
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(`${url}/api/user/logout`);
+      if (!response) {
+        toast.error(response.message);
+        return;
+      }
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setCartItems({});
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data.message);
     }
   };
 
@@ -42,8 +79,6 @@ const StoreContextProvider = (props) => {
       const response = await axios.get(`${url}/api/foodDrink/list`);
       if (response.data.success) {
         setAllMenu(response.data.data);
-      } else {
-        console.log(response.data.message);
       }
     } catch (error) {
       console.log(error.response.data.message);
@@ -51,60 +86,61 @@ const StoreContextProvider = (props) => {
   };
 
   // Get user orders
-  const getOrders = async (token) => {
-    const response = await axios.get(`${url}/api/order/userorder`, {
-      headers: { token },
-    });
-    setOrders(response.data.data);
+  const getOrders = async () => {
+    try {
+      const response = await axios.get(`${url}/api/order/userorder`);
+      setOrders(response.data.data);
+    } catch (error) {
+      console.log(error.response?.data.message);
+    }
   };
 
   // Load cart data
-  const loadCartData = async (token) => {
-    const response = await axios.get(`${url}/api/cart/get`, {
-      headers: { token },
-    });
-    setCartItems(response.data.cartData);
+  const loadCartData = async () => {
+    try {
+      const response = await axios.get(`${url}/api/cart/get`);
+      setCartItems(response.data.cartData);
+    } catch (error) {
+      console.log(error.response?.data.message);
+    }
   };
 
   //   Add to Cart
   const addToCart = async (itemId) => {
-    if (!token) {
+    if (!isAuthenticated) {
       toast.error("Silahkan login terlebih dahulu!");
       navigate("/login");
+      return;
     }
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    }
-    if (token) {
-      const response = await axios.post(
-        `${url}/api/cart/add`,
-        { itemId },
-        { headers: { token } }
-      );
+
+    try {
+      if (!cartItems[itemId]) {
+        setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
+      } else {
+        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+      }
+
+      const response = await axios.post(`${url}/api/cart/add`, { itemId });
       if (response.data.success) {
         toast.success(response.data.message);
       } else {
         toast.error(response.data.message);
       }
+    } catch (error) {
+      toast.error(error.response?.data.message);
     }
   };
 
   //   Remove from Cart
   const removeFromCart = async (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    if (token) {
-      const response = await axios.post(
-        `${url}/api/cart/remove`,
-        { itemId },
-        { headers: { token } }
-      );
+    try {
+      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+      const response = await axios.post(`${url}/api/cart/remove`, { itemId });
       if (response.data.success) {
-        toast.warning(response.data.message);
-      } else {
-        toast.error(response.data.message);
+        toast.success(response.data.message);
       }
+    } catch (error) {
+      toast.error(error.response?.data.message);
     }
   };
 
@@ -127,13 +163,13 @@ const StoreContextProvider = (props) => {
 
   useEffect(() => {
     async function loadData() {
-      if (localStorage.getItem("token")) {
-        setToken(localStorage.getItem("token"));
+      const isAuth = await checkAuthStatus();
+      if (isAuth) {
+        await loadCartData();
+        await getOrders();
       }
       getMenuList();
       await getAllMenu();
-      await loadCartData(localStorage.getItem("token"));
-      await getOrders(localStorage.getItem("token"));
     }
     loadData();
   }, []);
@@ -153,8 +189,11 @@ const StoreContextProvider = (props) => {
     removeFromCart,
     isCartEmpty,
     getTotalCartAmount,
-    token,
-    setToken,
+    isAuthenticated,
+    setIsAuthenticated,
+    userRole,
+    setUserRole,
+    handleLogout,
   };
 
   return (

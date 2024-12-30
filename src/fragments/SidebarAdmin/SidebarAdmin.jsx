@@ -1,17 +1,13 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { BsBoxSeam } from "react-icons/bs";
 import { TbLogout2 } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { StoreContext } from "../../context/StoreContext";
 
 const SidebarAdmin = () => {
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("tokenAdmin");
-    navigate("/login");
-  };
+  const { handleLogout } = useContext(StoreContext);
 
   return (
     <div className="w-[18%] min-h-[100vh] border border-neutral-300 border-t-0">

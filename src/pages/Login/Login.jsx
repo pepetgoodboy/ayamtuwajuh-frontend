@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Input from "../../components/Input/Input";
 import AuthLayout from "../../layouts/AuthLayout/AuthLayout";
 import Form from "../../components/Form/Form";
@@ -8,8 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const { url, setToken } = useContext(StoreContext);
-
+  const { url, setIsAuthenticated, setUserRole } = useContext(StoreContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,27 +20,29 @@ const Login = () => {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      const response = await axios.post(`${url}/api/user/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${url}/api/user/login`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+
       if (response.data.success) {
+        console.log(response.data.role);
         if (response.data.role === "admin") {
-          setToken(response.data.token);
-          localStorage.setItem("tokenAdmin", response.data.token);
+          setIsAuthenticated(response.data.success);
+          setUserRole(response.data.role);
           navigate("/admin/add");
         } else {
-          setToken(response.data.token);
-          localStorage.setItem("token", response.data.token);
+          setIsAuthenticated(response.data.success);
+          setUserRole(response.data.role);
           navigate("/");
         }
-      } else {
-        toast.error(response.data.message);
-        setEmail("");
-        setPassword("");
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data.message);
       setEmail("");
       setPassword("");
     } finally {

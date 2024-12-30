@@ -13,9 +13,12 @@ const Cart = () => {
     getTotalCartAmount,
     removeFromCart,
     isCartEmpty,
+    validateUser,
   } = useContext(StoreContext);
 
-  console.log(cartItems);
+  useEffect(() => {
+    validateUser();
+  }, []);
 
   return (
     <DefaultLayout>

@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import CurrencyIDR from "../../composables/CurrencyIDR/CurrencyIDR";
 
 const PlaceOrder = () => {
-  const { url, token, allMenu, cartItems, setCartItems, getTotalCartAmount } =
+  const { url, allMenu, cartItems, setCartItems, getTotalCartAmount } =
     useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -36,9 +36,7 @@ const PlaceOrder = () => {
       items: orderItems,
       amount: getTotalCartAmount(),
     };
-    const response = await axios.post(`${url}/api/order/place`, orderData, {
-      headers: { token },
-    });
+    const response = await axios.post(`${url}/api/order/place`, orderData);
     if (response.data.success) {
       setCartItems({});
       toast.success(response.data.message);

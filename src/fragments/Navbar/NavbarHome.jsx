@@ -8,16 +8,12 @@ import { IoMdArrowDropupCircle } from "react-icons/io";
 import { StoreContext } from "../../context/StoreContext";
 
 const NavbarHome = () => {
-  const { token, cartItems } = useContext(StoreContext);
+  const { cartItems, handleLogout, isAuthenticated } = useContext(StoreContext);
 
   const [open, setOpen] = useState(false);
 
   const toggleMenu = () => {
     setOpen(!open);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
   };
 
   return (
@@ -50,7 +46,7 @@ const NavbarHome = () => {
               >
                 Menu
               </ScrollLink>
-              {token && (
+              {isAuthenticated && (
                 <Link
                   to="/myorders"
                   className="hover:text-orange-500 font-poppins cursor-pointer"
@@ -90,7 +86,7 @@ const NavbarHome = () => {
                   )}
                 </Link>
               </div>
-              {token ? (
+              {isAuthenticated ? (
                 <Button
                   onClick={handleLogout}
                   text="Logout"
@@ -145,7 +141,7 @@ const NavbarHome = () => {
                   Menu
                 </ScrollLink>
                 <hr className="border-1 border-neutral-300" />
-                {token && (
+                {isAuthenticated && (
                   <>
                     <Link
                       to="/myorders"
@@ -182,7 +178,7 @@ const NavbarHome = () => {
                   Contact
                 </ScrollLink>
                 <hr className="border-1 border-neutral-300" />
-                {token ? (
+                {isAuthenticated ? (
                   <Button onClick={handleLogout} text="Logout" link="/login" />
                 ) : (
                   <>

@@ -6,16 +6,12 @@ import { Link } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
 
 const Navbar = () => {
-  const { token, cartItems } = useContext(StoreContext);
+  const { isAuthenticated, handleLogout, cartItems } = useContext(StoreContext);
 
   const [open, setOpen] = useState(false);
 
   const toggleMenu = () => {
     setOpen(!open);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
   };
 
   return (
@@ -43,7 +39,7 @@ const Navbar = () => {
               >
                 Menu
               </Link>
-              {token && (
+              {isAuthenticated && (
                 <Link
                   to="/myorders"
                   className="hover:text-orange-500 font-poppins cursor-pointer"
@@ -73,7 +69,7 @@ const Navbar = () => {
                   )}
                 </Link>
               </div>
-              {token ? (
+              {isAuthenticated ? (
                 <Button
                   onClick={handleLogout}
                   text="Logout"
@@ -123,7 +119,7 @@ const Navbar = () => {
                   Menu
                 </Link>
                 <hr className="border-1 border-neutral-300" />
-                {token && (
+                {isAuthenticated && (
                   <Link
                     to="/myorders"
                     className="hover:text-orange-500 font-poppins cursor-pointer"
@@ -148,7 +144,7 @@ const Navbar = () => {
                   Contact
                 </Link>
                 <hr className="border-1 border-neutral-300" />
-                {token ? (
+                {isAuthenticated ? (
                   <Button onClick={handleLogout} text="Logout" link="/login" />
                 ) : (
                   <>

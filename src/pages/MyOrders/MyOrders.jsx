@@ -1,24 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
 import DefaultLayout from "../../layouts/DefaultLayout/DefaultLayout";
-import { BiSolidBox } from "react-icons/bi";
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import Parcel from "../../assets/parcel_icon.png";
 
 const MyOrders = () => {
-  const { url, token } = useContext(StoreContext);
+  const { url, validateUser } = useContext(StoreContext);
   const [orders, setOrders] = useState([]);
 
-  const getOrders = async (token) => {
-    const response = await axios.get(`${url}/api/order/userorder`, {
-      headers: { token },
-    });
+  const getOrders = async () => {
+    const response = await axios.get(`${url}/api/order/userorder`);
     setOrders(response.data.data);
   };
 
   useEffect(() => {
-    getOrders(token);
-  }, [token]);
+    getOrders();
+  }, []);
+
+  useEffect(() => {
+    validateUser();
+  });
 
   return (
     <DefaultLayout>

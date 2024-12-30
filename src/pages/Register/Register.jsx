@@ -8,7 +8,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Register = () => {
-  const { url, setToken } = useContext(StoreContext);
+  const { url } = useContext(StoreContext);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
