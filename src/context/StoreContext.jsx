@@ -19,6 +19,7 @@ const StoreContextProvider = (props) => {
 
   // Configure axios defaults
   axios.defaults.withCredentials = true;
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
   // Check auth status
   const checkAuthStatus = async () => {
