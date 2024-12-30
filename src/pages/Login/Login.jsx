@@ -30,7 +30,6 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        console.log(response.data.role);
         if (response.data.role === "admin") {
           setIsAuthenticated(response.data.success);
           setUserRole(response.data.role);
