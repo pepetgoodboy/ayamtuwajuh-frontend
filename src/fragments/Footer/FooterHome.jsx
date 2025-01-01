@@ -15,7 +15,7 @@ const FooterHome = () => {
         <div className="flex flex-col md:flex-row md:justify-between gap-14 md:px-24 lg:px-32">
           <div className="flex flex-col md:flex-row gap-10 lg:gap-20">
             <div className="flex flex-col md:justify-normal justify-center items-center md:items-start text-white gap-4">
-              <h3 className="font-medium">Direct Link</h3>
+              <h2 className="font-medium">Direct Link</h2>
               <div className="flex md:flex-col justify-center md:justify-normal items-center md:items-start gap-14 md:gap-1 text-white text-xs md:text-sm">
                 <ScrollLink
                   activeClass="active"
@@ -67,7 +67,7 @@ const FooterHome = () => {
               </div>
             </div>
             <div className="flex flex-col md:justify-normal justify-center items-center md:items-start text-white gap-4">
-              <h3 className="font-medium">Kontak kami</h3>
+              <h2 className="font-medium">Kontak kami</h2>
               <div className="flex md:flex-col justify-center md:justify-normal items-center md:items-start gap-14 md:gap-1 text-white text-xs md:text-sm">
                 <div className="flex items-center gap-1">
                   <FaEnvelope className="w-5 md:w-6 h-5 md:h-6  text-white" />

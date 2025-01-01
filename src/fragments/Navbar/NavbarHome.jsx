@@ -79,7 +79,7 @@ const NavbarHome = () => {
             </div>
             <div className="flex items-center gap-3 md:gap-5 justify-center">
               <div className="relative">
-                <Link to="/cart">
+                <Link to="/cart" aria-label="Cart item">
                   <FaCartShopping className="text-xl lg:text-2xl cursor-pointer" />
                   {cartItems && Object.keys(cartItems).length > 0 && (
                     <div className="absolute -top-2 -right-1 w-2 h-2 rounded-full bg-orange-400 text-white text-xs flex items-center justify-center"></div>
